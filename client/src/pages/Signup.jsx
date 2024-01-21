@@ -29,11 +29,11 @@ export default function Signup() {
                         </div>
                         <div>
                             <Label value='Email' />
-                            <TextInput type='text' placeholder='email..' id='email'></TextInput>
+                            <TextInput type='email' placeholder='email..' id='email'></TextInput>
                         </div>
                         <div>
                             <Label value='Password' />
-                            <TextInput type='text' placeholder='password' id='password'></TextInput>
+                            <TextInput type='password' placeholder='password' id='password'></TextInput>
                         </div>
                         <Button gradientDuoTone='purpleToPink' type='submit'>Sign Up</Button>
                     </form>
