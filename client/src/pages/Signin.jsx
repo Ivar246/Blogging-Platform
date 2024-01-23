@@ -3,6 +3,7 @@ import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux"
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice"
+import Oauth from '../components/Oauth'
 
 export default function Signin() {
     const [formData, setFormData] = useState({})
@@ -80,6 +81,7 @@ export default function Signin() {
                             ) :
                                 "Sign In"
                         }</Button>
+                        <Oauth />
                     </form>
                     <div>
                         <div className="flex gap-2 text-sm mt-5">
@@ -88,6 +90,7 @@ export default function Signin() {
                                 Sign Up
                             </Link>
                         </div>
+
                         {
                             errorMessage && (
                                 <Alert className='mt-f' color='failure'>

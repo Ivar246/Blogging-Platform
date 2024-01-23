@@ -4,6 +4,9 @@ import config from "../config/config.js"
 import { errorHandler } from "../utils/error.js";
 import tokenUtil from "../utils/getToken.js";
 
+const { AT_SECRET } = config;
+
+
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
 
@@ -48,7 +51,7 @@ export const signin = async (req, res, next) => {
             email: user.email
         }
         const { password: pass, ...rest } = user._doc;
-        const atToken = tokenUtil.getAtToken(payload, config.AT_SECRET);
+        const atToken = tokenUtil.getAtToken(payload, AT_SECRET);
 
         return res.status(200).cookie('access_token', atToken, {
             httpOnly: true
@@ -56,5 +59,50 @@ export const signin = async (req, res, next) => {
 
     } catch (error) {
         return next(error);
+    }
+}
+
+export const google = async (req, res, next) => {
+    const { name, email, googlePhotoUrl } = req.body;
+    console.log(name, email, googlePhotoUrl)
+
+
+    try {
+        const user = await User.findOne({ email });
+        if (user) {
+            const payload = {
+                id: user.id,
+                email: user.email
+            }
+
+            const { password, ...rest } = user._doc;
+            const token = tokenUtil.getAtToken(payload, AT_SECRET, { expiresIn: "120s" });
+
+            return res.status(200).cookie("access_token", token, { httpOnly: true }).json(rest);
+
+        } else {
+            const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            const newUser = new User({
+                username: name.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
+                email,
+                password: randomPassword,
+                profilePicture: googlePhotoUrl
+
+            });
+
+            await newUser.save()
+
+
+            const payload = {
+                id: newUser._id,
+                email: newUser.email
+            }
+            const token = tokenUtil.getAtToken(payload, AT_SECRET, { expiresIn: "120s" })
+            const { password, ...rest } = newUser;
+            return res.status(200).cookie("access_token", token, { httpOnly: true }).json(rest);
+        }
+
+    } catch (error) {
+        next(error)
     }
 }
