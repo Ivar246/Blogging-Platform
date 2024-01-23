@@ -1,11 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from 'dotenv'
+import "dotenv/config"
 import userRoutes from './routes/user.js'
 import authRoutes from "./routes/auth.js"
-dotenv.config()
+import config from './config/config.js'
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
+
+const { MONGO_URI, PORT } = config;
+
+
+mongoose.connect(MONGO_URI).then(() => {
     console.log("database connected successfully.")
 }).catch(error => {
     console.log(error)
@@ -15,7 +19,6 @@ const app = express();
 
 app.use(express.json())
 
-const PORT = process.env.PORT
 
 
 app.use("/api/user", userRoutes);
