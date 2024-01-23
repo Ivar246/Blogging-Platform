@@ -41,7 +41,7 @@ export const signin = async (req, res, next) => {
         const isMatch = await argon.verify(user.password, password);
 
         if (!isMatch)
-            return next(errorHandler(400, "Password is Incorrect"));
+            return next(errorHandler(400, "Password is Incorrect."));
 
         const payload = {
             id: user._id,

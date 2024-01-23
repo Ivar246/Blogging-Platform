@@ -1,47 +1,45 @@
 import React, { useState } from 'react'
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux"
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice"
 
 export default function Signin() {
     const [formData, setFormData] = useState({})
-    const [errorMessage, setErrorMessage] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const { loading, error: errorMessage } = useSelector(state => state.user)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleChange = (e) => {
-
         setFormData({ ...formData, [e.target.name]: e.target.value.trim() })
-        console.log(formData)
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!formData.email || !formData.password) {
-            return setErrorMessage("Please fill up all field.")
+            return dispatch(signInFailure("Please fill up all field."))
         }
         try {
-            setLoading(true) // if everything working fine
-            setErrorMessage(null) //  may have previous error
-
-
-
+            dispatch(signInStart());
             const res = await fetch("/api/auth/signin", {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             })
             const data = await res.json();
+            console.log(data)
             if (data.success === false) {
-                setErrorMessage(data.message)
+                return dispatch(signInFailure(data.message))
             }
-            setLoading(false);
 
             if (res.ok) {
+                dispatch(signInSuccess(data))
                 return navigate("/")
             }
 
         } catch (error) {
-            setErrorMessage(error.mesage)
+            return dispatch(signInFailure(error.message))
+
         }
     }
 
