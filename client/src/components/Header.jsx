@@ -2,12 +2,15 @@ import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
 import { Link, useLocation } from 'react-router-dom'
 import React from 'react'
 import { AiOutlineSearch } from "react-icons/ai"
-import { FaMoon } from "react-icons/fa"
-import { useSelector } from "react-redux"
-
+import { FaMoon, FaSun } from "react-icons/fa"
+import { useDispatch, useSelector } from "react-redux"
+import { toogleTheme } from '../redux/theme/themeSlice'
 
 export default function Header() {
-    const path = useLocation().pathname
+    const path = useLocation().pathname // this gets the current path like "/signin", "/signup"
+    const dispatch = useDispatch()
+    const { theme } = useSelector(state => state.theme)
+
     const { currentUser } = useSelector(state => state.user)
     return (
         <Navbar className="border-b-2">
@@ -34,8 +37,8 @@ export default function Header() {
             </Button>
 
             <div className='flex gap-2 md:order-last'>
-                <Button className='w-12 h-10 hidden sm:inline' color="gray" pill>
-                    <FaMoon />
+                <Button className='w-12 h-10 hidden sm:inline' color="gray" onClick={() => { dispatch(toogleTheme()) }} pill >
+                    {theme === "light" ? <FaSun /> : <FaMoon />}
                 </Button>
                 {
                     currentUser ? (
