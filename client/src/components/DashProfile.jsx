@@ -23,7 +23,7 @@ export default function DashProfile() {
 
             </form>
             <div className="text-red-500 flex justify-between">
-                <span className='cursor-pointer'>Delete User</span>
+                <span className='cursor-pointerd '>Delete User</span>
                 <span className='cursor-pointer'>Sign Out</span>
             </div>
         </div>
