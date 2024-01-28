@@ -70,12 +70,11 @@ export const google = async (req, res, next) => {
     try {
         const user = await User.findOne({ email });
         if (user) {
+            const { password, ...rest } = user._doc;
             const payload = {
                 id: user.id,
                 email: user.email
             }
-
-            const { password, ...rest } = user._doc;
             const token = tokenUtil.getAtToken(payload, AT_SECRET, { expiresIn: "120s" });
 
             return res.status(200).cookie("access_token", token, { httpOnly: true }).json(rest);
