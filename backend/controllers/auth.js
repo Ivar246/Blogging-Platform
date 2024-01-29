@@ -53,6 +53,8 @@ export const signin = async (req, res, next) => {
         const { password: pass, ...rest } = user._doc;
         const atToken = tokenUtil.getAtToken(payload, AT_SECRET);
 
+        console.log("atToken", atToken)
+
         return res.status(200).cookie('access_token', atToken, {
             httpOnly: true
         }).json(rest);

@@ -5,7 +5,7 @@ import userRoutes from './routes/user.js'
 import authRoutes from "./routes/auth.js"
 import cookieParser from "cookie-parser"
 import config from './config/config.js'
-
+import morgan from "morgan";
 
 const { MONGO_URI, PORT } = config;
 
@@ -18,9 +18,11 @@ mongoose.connect(MONGO_URI).then(() => {
 
 const app = express();
 
-app.use(express.json())
 app.use(cookieParser())
+app.use(express.json())
 
+
+app.use(morgan("dev"))
 
 app.use("/api/user", userRoutes);
 app.use('/api/auth', authRoutes)
