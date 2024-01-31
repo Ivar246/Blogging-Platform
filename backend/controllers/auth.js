@@ -48,7 +48,8 @@ export const signin = async (req, res, next) => {
 
         const payload = {
             id: user._id,
-            email: user.email
+            email: user.email,
+            isAdmin: user.isAdmin
         }
         const { password: pass, ...rest } = user._doc;
         const atToken = tokenUtil.getAtToken(payload, AT_SECRET);
@@ -75,7 +76,8 @@ export const google = async (req, res, next) => {
             const { password, ...rest } = user._doc;
             const payload = {
                 id: user.id,
-                email: user.email
+                email: user.email,
+                isAdmin: user.isAdmin
             }
             const token = tokenUtil.getAtToken(payload, AT_SECRET, { expiresIn: "120s" });
 
@@ -96,7 +98,8 @@ export const google = async (req, res, next) => {
 
             const payload = {
                 id: newUser._id,
-                email: newUser.email
+                email: newUser.email,
+                isAdmin: newUser.isAdmin
             }
             const token = tokenUtil.getAtToken(payload, AT_SECRET, { expiresIn: "120s" })
             const { password, ...rest } = newUser;
