@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { Alert, Button, TextInput, Modal } from 'flowbite-react'
+import { Alert, Button, TextInput, Modal, Spinner } from 'flowbite-react'
 import { useState, useRef, useEffect } from 'react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { app } from '../firebase'
@@ -7,9 +7,10 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { updateStart, updateSuccess, updateFailure, deleteUserStart, deleteUserFailure, deleteUserSuccess, signoutFailure, signoutSuccess } from '../redux/user/userSlice'
 import { HiOutlineExclamationCircle } from "react-icons/hi"
+import { Link } from 'react-router-dom'
 
 export default function DashProfile() {
-    const { currentUser, error } = useSelector(state => state.user);
+    const { currentUser, error, loading } = useSelector(state => state.user);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
     const filePickerRef = useRef();
@@ -198,9 +199,26 @@ export default function DashProfile() {
                 <TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} onChange={handleChange} />
                 <TextInput type='email' id='email' placeholder='username' defaultValue={currentUser.email} onChange={handleChange} />
                 <TextInput type='password' id='password' placeholder='password' onChange={handleChange} />
-                <Button type='submit' gradientDuoTone="purpleToBlue">
-                    update
+                <Button type='submit' gradientDuoTone="purpleToBlue"
+                    disabled={loading || imageFileUploading}>
+                    {
+                        loading ? (
+                            <>
+                                <Spinner size="sm" />
+                                <span>Loading...</span>
+                            </>
+                        ) :
+                            "Update"
+                    }
                 </Button>
+                {
+                    currentUser.isAdmin && (
+                        <Link to={'create-post'}>
+                            <Button type='button' gradientDuoTone='purpleToPink' className='w-full'>Create a postt</Button>
+                        </Link>
+
+                    )
+                }
 
             </form>
             <div className="text-red-500 flex justify-between">
