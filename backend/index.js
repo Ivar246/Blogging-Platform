@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import "dotenv/config"
 import userRoutes from './routes/user.js'
 import authRoutes from "./routes/auth.js"
+import postRoutes from "./routes/post.js"
 import cookieParser from "cookie-parser"
 import config from './config/config.js'
 import morgan from "morgan";
@@ -25,7 +26,8 @@ app.use(express.json())
 app.use(morgan("dev"))
 
 app.use("/api/user", userRoutes);
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authRoutes);
+app.use("/api/post", postRoutes)
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
