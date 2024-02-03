@@ -1,12 +1,13 @@
 import { Sidebar } from 'flowbite-react'
-import { HiArrowRight, HiUser } from 'react-icons/hi'
+import { HiArrowRight, HiDocumentText, HiUser } from 'react-icons/hi'
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function DashSidebar() {
     const location = useLocation()
     const [tab, setTab] = useState("");
-
+    const { currentUser } = useSelector(state => state.user)
     const handleSignout = async () => {
         try {
             const res = await fetch("/api/user/signout", {
@@ -37,12 +38,23 @@ export default function DashSidebar() {
                 <Sidebar.ItemGroup>
                     <Link to='/dashboard?tab=profile' >
                         <Sidebar.Item active={tab === "profile"}
-                            icon={HiUser} label={"User"}
+                            icon={HiUser} label={currentUser.isAdmin ? "Admin" : "User"}
                             labelColor='dark'
                             as='div'>
                             Profile
                         </Sidebar.Item>
                     </Link>
+
+                    {currentUser.isAdmin &&
+
+                        <Link to='/dashboard?tab=posts'>
+                            <Sidebar.Item active={tab === 'posts'}
+                                icon={HiDocumentText}
+                                as="div">
+                                Posts
+                            </Sidebar.Item>
+                        </Link>
+                    }
                     <Sidebar.Item icon={HiArrowRight} className="cursor-pointer" onClick={handleSignout}>
                         Sign Out
                     </Sidebar.Item>
