@@ -1,12 +1,28 @@
-import { Table } from 'flowbite-react'
-import { useEffect, useState } from 'react'
-import { useSelector } from "react-redux"
-import { Link } from 'react-router-dom'
+import { Table } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
+import { Link } from 'react-router-dom';
 
 export default function DashPost() {
-    const { currentUser } = useSelector(state => state.user)
-    const [userPosts, setUserPosts] = useState([])
-    console.log(userPosts)
+    const { currentUser } = useSelector(state => state.user);
+    const [userPosts, setUserPosts] = useState([]);
+    const [showMore, setShowMore] = useState(true);
+
+    const handleShowMore = async () => {
+        const startIndex = userPosts.length;
+        try {
+            const res = await fetch(`/api/post/getPosts?userId=${currentUser._id}&startIndex=${startIndex}`, { method: "GET" });;
+            const data = await res.json();
+
+            if (res.ok) {
+                setUserPosts((prev) => [...prev, ...data.posts])
+                if (data.posts.length < 9)
+                    setShowMore(false);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -17,6 +33,9 @@ export default function DashPost() {
                 const data = await res.json();
                 if (res.ok) {
                     setUserPosts(data.posts)
+                    if (data.posts.length < 9) {
+                        setShowMore(false);
+                    }
                 }
             } catch (error) {
                 console.log(error.message)
@@ -74,6 +93,12 @@ export default function DashPost() {
                             </Table.Body>
                         })}
                     </Table>
+
+                    {
+                        showMore && (
+                            <button className='w-full text-teal-500 self-center text-sm py-7' onClick={handleShowMore}>Show more</button>
+                        )
+                    }
                 </>
             ) :
                 (<p>You have no posts</p>)

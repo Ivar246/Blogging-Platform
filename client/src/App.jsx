@@ -25,7 +25,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
-          <Route path="/create-post" element={<CreatePost />}></Route>
+          <Route path="/create-post" element={<CreatePost />} />
         </Route>
       </Routes >
       <FooterComponent />
