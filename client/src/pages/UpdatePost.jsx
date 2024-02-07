@@ -1,22 +1,25 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import "react-circular-progressbar/dist/styles.css"
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 
 export default function UpdatePost() {
+
     const { postId } = useParams();
+    const { currentUser } = useSelector(state => state.user)
     const [file, setFile] = useState(null);
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
     const [formData, setFormData] = useState({});
     const [publishError, setPublishError] = useState(null)
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchPost() {
@@ -45,8 +48,8 @@ export default function UpdatePost() {
         e.preventDefault();
 
         try {
-            const res = await fetch("/api/post/create", {
-                method: "POST",
+            const res = await fetch(`/api/post/updatePost/${postId}/${currentUser._id}`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -59,6 +62,7 @@ export default function UpdatePost() {
             }
 
             setPublishError(null);
+            navigate(`/post/${data.slug}`);
         } catch (error) {
             setPublishError(error.message)
         }
@@ -150,7 +154,7 @@ export default function UpdatePost() {
                     onChange={(value) => setFormData({ ...formData, content: value })}
                     value={formData.content}
                     required />
-                <Button type='submit' gradientDuoTone='purpleToPink'>Update</Button>
+                <Button type='submit' gradientDuoTone='purpleToPink'>Update post</Button>
                 {
                     publishError && (
                         <Alert color="failure" className='mt-5'>{publishError}</Alert>
