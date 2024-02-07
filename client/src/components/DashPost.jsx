@@ -105,12 +105,9 @@ export default function DashPost() {
                                             setPostIdToDelete(post._id)
                                         }}>Delete</span>
                                     </Table.Cell>
-
-
                                     <Table.Cell>
-                                        <Link className='text-teal-500 hover:underline cursor-pointer' to={`/update-post/${post._id}`}>
+                                        <Link className='text-teal-500 hover:underline cursor-pointer' to={`/update-post/${post._id}`} >
                                             <span>Edit</span>
-
                                         </Link>
                                     </Table.Cell>
 
