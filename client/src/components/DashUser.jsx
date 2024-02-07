@@ -10,7 +10,6 @@ export default function DashUser() {
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [userIdToDelete, setUserIdToDelete] = useState("");
-    const [loading, setLoading] = useState(false)
 
     const handleShowMore = async () => {
         const startIndex = users.length;
@@ -31,7 +30,7 @@ export default function DashUser() {
     const handleDeleteUser = async () => {
         setShowModal(false);
         try {
-            const res = await fetch(`/api/user/deleteUser/${userIdToDelete}/${currentUser._id}`, { method: "DELETE" })
+            const res = await fetch(`/api/user/delete/${userIdToDelete}`, { method: "DELETE" })
             const data = await res.json();
             if (!res.ok) {
                 console.log(data.message);
