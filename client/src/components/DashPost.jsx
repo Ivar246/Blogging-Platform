@@ -1,4 +1,4 @@
-import { Table, Modal, Button } from 'flowbite-react';
+import { Table, Modal, Button, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
@@ -10,6 +10,7 @@ export default function DashPost() {
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [postIdToDelete, setPostIdToDelete] = useState("");
+    const [loading, setLoading] = useState(true)
 
     const handleShowMore = async () => {
         const startIndex = userPosts.length;
@@ -48,25 +49,33 @@ export default function DashPost() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
+                setLoading(true);
                 const res = await fetch(`/api/post/getPosts?${currentUser._id}`, {
                     method: "GET"
                 });
                 const data = await res.json();
+
                 if (res.ok) {
                     setUserPosts(data.posts)
+                    setLoading(false);
                     console.log(data.posts.length)
                     if (data.posts.length < 9) {
                         setShowMore(false);
                     }
                 }
             } catch (error) {
+                setLoading(false);
                 console.log(error.message)
             }
         }
         if (currentUser.isAdmin)
             fetchPosts()
-    }, [currentUser._id])
+    }, [currentUser._id]);
 
+    if (loading)
+        return <div className='flex max-w-screen mx-auto items-center min-h-screen'>
+            <Spinner size="xl" />
+        </div>
 
     return (
         <div className='table-auto overlfow-x-scroll md:mx-auto p-3 scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
@@ -85,7 +94,7 @@ export default function DashPost() {
                         </Table.Head>
 
                         {userPosts.map((post) => {
-                            return <Table.Body className='divide-y'>
+                            return <Table.Body className='divide-y' key={post._id}>
                                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                                     <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
                                     <Table.Cell>

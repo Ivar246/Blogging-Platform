@@ -1,4 +1,4 @@
-import { Table, Modal, Button } from 'flowbite-react';
+import { Table, Modal, Button, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
@@ -10,6 +10,7 @@ export default function DashUser() {
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [userIdToDelete, setUserIdToDelete] = useState("");
+    const [loading, setLoading] = useState(true)
 
     const handleShowMore = async () => {
         const startIndex = users.length;
@@ -33,13 +34,13 @@ export default function DashUser() {
             const res = await fetch(`/api/user/delete/${userIdToDelete}`, { method: "DELETE" })
             const data = await res.json();
             if (!res.ok) {
-                console.log(data.message);
-            } else {
-                setUsers(prev =>
-                    prev.filter(user => user._id !== userIdToDelete))
-                if (users.length < 9)
-                    setShowMore(false)
+                throw new Error(data.message);
             }
+
+            setUsers(prev => prev.filter(user => user._id !== userIdToDelete))
+            if (users.length < 9)
+                setShowMore(false)
+
         } catch (error) {
             console.log(error);
         }
@@ -48,15 +49,18 @@ export default function DashUser() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                setLoading(true);
                 const res = await fetch(`/api/user/getUsers`);
                 const data = await res.json();
                 if (res.ok) {
                     setUsers(data.users);
+                    setLoading(false)
                     if (data.users.length < 9) {
                         setShowMore(false);
                     }
                 }
             } catch (error) {
+                setLoading(false)
                 console.log(error.message);
             }
         }
@@ -64,7 +68,10 @@ export default function DashUser() {
             fetchUsers();
     }, [currentUser._id]);
 
-    console.log(users)
+    if (loading)
+        return <div className='flex max-w-screen mx-auto items-center min-h-screen'>
+            <Spinner size="xl" />
+        </div>
 
     return (
         <div className='table-auto overlfow-x-scroll md:mx-auto p-3 scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
