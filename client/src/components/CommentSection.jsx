@@ -60,6 +60,7 @@ export default function CommentSection({ postId }) {
         getComments();
     }, [postId]);
 
+    // comment like handler
     const handleLike = async (commentId) => {
         try {
             if (!currentUser) {
@@ -86,6 +87,16 @@ export default function CommentSection({ postId }) {
         } catch (error) {
             console.log(error.message);
         }
+    }
+
+    // edit comment handler
+    const handleEdit = async (comment, editedContent) => {
+        setComments(comments.map(c => {
+            return c._id === comment._id ? {
+                ...c,
+                content: editedContent
+            } : c;
+        }));
     }
 
     return (
@@ -148,7 +159,7 @@ export default function CommentSection({ postId }) {
 
                             {
                                 comments.map(comment => (
-                                    <Comment key={comment._id} comment={comment} onLike={handleLike} />
+                                    <Comment key={comment._id} comment={comment} onLike={handleLike} onEdit={handleEdit} />
                                 ))
                             }
                         </>
