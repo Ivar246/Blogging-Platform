@@ -6,9 +6,9 @@ import { Textarea, Button } from 'flowbite-react';
 
 
 
-export default function Comment({ comment, onLike, onEdit }) {
+export default function Comment({ comment, onLike, onEdit, onDelete }) {
     const { currentUser } = useSelector(state => state.user)
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState({});
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState(comment.content);
 
@@ -31,7 +31,7 @@ export default function Comment({ comment, onLike, onEdit }) {
     const handleEdit = () => {
         setIsEditing(true);
         setEditedContent(comment.content);
-    }
+    };
 
     const handleSave = async () => {
         try {
@@ -55,6 +55,7 @@ export default function Comment({ comment, onLike, onEdit }) {
 
         }
     }
+
     return (
         <div className='flex p-4 border border-b dark:border-gray-600 text-sm'>
             <div className='flex shrink-0 mr-3'>
@@ -101,17 +102,23 @@ export default function Comment({ comment, onLike, onEdit }) {
                                     </p>
                                     {
                                         currentUser && (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                                            <button type='submit' className='text-gray-400 hover hover:text-blue-500'
-                                                onClick={handleEdit}>
-                                                Edit
-                                            </button>
+                                            <>
+                                                <button type='button' className='text-gray-400 hover hover:text-blue-500'
+                                                    onClick={handleEdit}>
+                                                    Edit
+                                                </button>
+                                                <button type='button' className='text-gray-400 hover hover:text-red-500'
+                                                    onClick={() => onDelete(comment._id)}>
+                                                    Delete
+                                                </button>
+                                            </>
+
                                         )
                                     }
                                 </div>
                             </>)}
-
-
             </div >
+
         </div >
     )
 }
