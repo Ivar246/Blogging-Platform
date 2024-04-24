@@ -16,7 +16,6 @@ export default function DashboardComponent() {
     const [lastMonthPosts, setLastMonthPosts] = useState(0)
     const { currentUser } = useSelector(state => state.user);
 
-    console.log(users[0])
     useEffect(() => {
         const fetchUsers = async () => {
             try {
